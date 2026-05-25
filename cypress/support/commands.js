@@ -5,11 +5,6 @@ Cypress.Commands.add('gerarEvidencia', (nome) => {
   cy.screenshot(nome, { capture: 'viewport' })
 })
 
-// Cypress.Commands.add('realizarLogin', (cpf, senha) => {
-//   cy.visit('https://front.serverest.dev/login')
-//   cy.gerarEvidencia('Tela de login exbida com sucesso')
-// })
-
 Cypress.Commands.add('realizarLoginFalse', (dados) => {
   cy.visit('https://front.serverest.dev/login')
   cy.gerarEvidencia('Tela de login exibida com sucesso')
@@ -29,10 +24,6 @@ Cypress.Commands.add('realizarLoginFalse', (dados) => {
 Cypress.Commands.add('realizarCadastro', (dados) => {
   cy.visit('https://front.serverest.dev/login')
   cy.gerarEvidencia('Tela de login exibida com sucesso')
-  cy.get(locLogin.login.campoLogin).type(dados.email)
-  cy.get(locLogin.login.campoSenha).type(dados.senha)
-  cy.get(locLogin.login.btnAcessar).click()
-  cy.gerarEvidencia('Dados invalidos de login preenchidos')
   cy.get(locLogin.login.btnCadastrar).click()
   cy.get(locLogin.login.cadastro.titulo).should('contain.text', 'Cadastro')
   cy.get(locLogin.login.cadastro.campoNome).type(dados.nome)
@@ -51,4 +42,31 @@ Cypress.Commands.add('realizarLogin', (dados) => {
   cy.get(locLogin.login.campoSenha).type(dados.senha)
   cy.get(locLogin.login.btnAcessar).click()
   cy.gerarEvidencia('Dados válidos de login preenchidos')
+})
+
+Cypress.Commands.add('realizarCadastroAdmin', (dados) => {
+
+  cy.get(locLogin.barraOpcoes.cadastrarUsuarios).click()
+
+  for (let index = 0; index < dados.quantidadeLoops; index++) {
+
+    cy.get(locLogin.login.cadastro.campoEmail).clear().type(`${dados.email}`)
+    cy.get(locLogin.login.cadastro.campoNome).clear().type(`${dados.nome}`)
+    cy.get(locLogin.login.cadastro.campoSenha).clear().type(`${dados.senha}`)
+    cy.log(`Executando loop ${index + 1}`)
+    cy.get(locLogin.cadastrarUsuarios.btnCadastrar).click()
+  }
+})
+
+Cypress.Commands.add('navegarListarUsuarios', (dados) => {
+
+  cy.get(locLogin.barraOpcoes.listarUsuarios).click()
+  cy.contains('Lista dos usuários').should('be.visible')
+  cy.gerarEvidencia('Tela de listagem de usuários exibida com sucesso')
+
+  cy.get(locLogin.listarUsuarios.linha).each(($linha, index) => {
+    cy.get(locLogin.listarUsuarios.coluna1).eq(index).then(($coluna1) => {
+      cy.log(`Valor da coluna 1 da linha ${index}: ${$coluna1.text()}`)
+    })
+  })
 })

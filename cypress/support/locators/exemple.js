@@ -17,5 +17,20 @@ export const locLogin = {
           alertSuccess: '.alert-link',
     },
   },
+  barraOpcoes:{
+    home: '[data-testid="home"]',
+    cadastrarUsuarios: '[data-testid="cadastrar-usuarios"]',
+    listarUsuarios: '[data-testid="listar-usuarios"]',
+    cadastrarProdutos: '[data-testid="cadastrar-produtos"]',
+    listarProdutos: '[data-testid="listar-produtos"]',
+    linkRelatorios: '[data-testid="link-relatorios"]'
+  },
+  cadastrarUsuarios: {
+    btnCadastrar: '[data-testid="cadastrarUsuario"]'
+  },
+  listarUsuarios: {
+   linha:'tbody > tr',
+   coluna1: 'td:nth-child(1)',
+  }
 
 }
