@@ -30,7 +30,13 @@ export const locLogin = {
   },
   listarUsuarios: {
    linha:'tbody > tr',
-   coluna1: 'td:nth-child(1)',
+   colunaNome: 'td:nth-child(1)',
+   colunaEmail: 'td:nth-child(2)',
+   colunaSenha: 'td:nth-child(3)',
+   colunaAdmin: 'td:nth-child(4)',
+   colunaAcoes: 'td:nth-child(5)',
+   btnEditar: '.row > .btn-info',
+   btnExcluir: '.row > .btn-danger'
   }
 
 }

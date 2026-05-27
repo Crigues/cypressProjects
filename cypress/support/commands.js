@@ -6,8 +6,6 @@ Cypress.Commands.add('gerarEvidencia', (nome) => {
 })
 
 Cypress.Commands.add('realizarLoginFalse', (dados) => {
-  cy.visit('https://front.serverest.dev/login')
-  cy.gerarEvidencia('Tela de login exibida com sucesso')
   cy.get(locLogin.login.campoLogin).type(dados.emailFalse)
   cy.get(locLogin.login.campoSenha).type(dados.senha)
   cy.get(locLogin.login.btnAcessar).click()
@@ -22,8 +20,6 @@ Cypress.Commands.add('realizarLoginFalse', (dados) => {
 })
 
 Cypress.Commands.add('realizarCadastro', (dados) => {
-  cy.visit('https://front.serverest.dev/login')
-  cy.gerarEvidencia('Tela de login exibida com sucesso')
   cy.get(locLogin.login.btnCadastrar).click()
   cy.get(locLogin.login.cadastro.titulo).should('contain.text', 'Cadastro')
   cy.get(locLogin.login.cadastro.campoNome).type(dados.nome)
@@ -36,8 +32,6 @@ Cypress.Commands.add('realizarCadastro', (dados) => {
 })
 
 Cypress.Commands.add('realizarLogin', (dados) => {
-  cy.visit('https://front.serverest.dev/login')
-  cy.gerarEvidencia('Tela de login exibida com sucesso')
   cy.get(locLogin.login.campoLogin).type(dados.email)
   cy.get(locLogin.login.campoSenha).type(dados.senha)
   cy.get(locLogin.login.btnAcessar).click()
@@ -65,8 +59,25 @@ Cypress.Commands.add('navegarListarUsuarios', (dados) => {
   cy.gerarEvidencia('Tela de listagem de usuários exibida com sucesso')
 
   cy.get(locLogin.listarUsuarios.linha).each(($linha, index) => {
-    cy.get(locLogin.listarUsuarios.coluna1).eq(index).then(($coluna1) => {
-      cy.log(`Valor da coluna 1 da linha ${index}: ${$coluna1.text()}`)
+    cy.get(locLogin.listarUsuarios.colunaNome).eq(index).then(($nome) => {
+      cy.log(`Valor da coluna Nome da linha ${index}: ${$nome.text()}`)
+    })
+  })
+})
+
+Cypress.Commands.add('excluirUsuario', (dados) => {
+
+  cy.get(locLogin.barraOpcoes.listarUsuarios).click()
+  cy.contains('Lista dos usuários').should('be.visible')
+  cy.gerarEvidencia('Tela de listagem de usuários exibida com sucesso')
+
+  cy.get(locLogin.listarUsuarios.linha).each(($linha, index) => {
+    cy.get(locLogin.listarUsuarios.colunaNome).eq(index).then(($nome) => {
+      if ($nome.text() === dados) {
+        cy.get(locLogin.listarUsuarios.btnExcluir).eq(index).click()
+      } else {
+        cy.log(`O usuário ${dados} não foi encontrado na linha ${index}`)
+      }
     })
   })
 })

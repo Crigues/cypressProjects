@@ -1,5 +1,15 @@
 import { faker } from '@faker-js/faker'
 
+beforeEach(() => {
+    cy.clearCookies()
+    cy.clearLocalStorage()
+    cy.window().then((win) => {
+        win.sessionStorage.clear()
+    })
+    cy.visit('https://front.serverest.dev/login')
+    cy.gerarEvidencia('Tela de login exibida com sucesso')
+})
+
 describe('Automação site serverest', () => {
 
     it('Não deve realizar login por credenciais inválidas', () => {
@@ -54,5 +64,18 @@ describe('Automação site serverest', () => {
         cy.navegarListarUsuarios()
     });
 
+    it.only('Deve excluir um usuário', () => {
+        let currentDadosLogin = {}
+        currentDadosLogin.dadosLogin = {}
 
+        currentDadosLogin.dadosLogin.email = 'ercastro.qa@gmail.com'
+        currentDadosLogin.dadosLogin.senha = 'Testqa..'
+
+        const usuarios = {
+            nomeUsuario: 'Emerson Castro'
+        }
+
+        cy.realizarLogin(currentDadosLogin.dadosLogin)
+        cy.excluirUsuario(usuarios.nomeUsuario)
+    });
 });
