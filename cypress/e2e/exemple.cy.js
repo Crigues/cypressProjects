@@ -53,7 +53,7 @@ describe('Automação site serverest', () => {
         cy.realizarCadastroAdmin(dados, currentDadosLogin.dadosLogin)
     });
 
-    it('Deve navegação na lista de usuários', () => {
+    it('Deve navegar na lista de usuários', () => {
         let currentDadosLogin = {}
         currentDadosLogin.dadosLogin = {}
 
@@ -72,7 +72,7 @@ describe('Automação site serverest', () => {
         currentDadosLogin.dadosLogin.senha = 'Testqa..'
 
         const usuarios = {
-            nomeUsuario: 'Emerson Castro'
+            nomeUsuario: 'Roger Upton'
         }
 
         cy.realizarLogin(currentDadosLogin.dadosLogin)

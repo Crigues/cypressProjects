@@ -36,6 +36,9 @@ Cypress.Commands.add('realizarLogin', (dados) => {
   cy.get(locLogin.login.campoSenha).type(dados.senha)
   cy.get(locLogin.login.btnAcessar).click()
   cy.gerarEvidencia('Dados válidos de login preenchidos')
+
+  cy.intercept('GET', '**/usuarios').as('getUsuarios')
+  cy.intercept('DELETE', '**/usuarios/*').as('deleteUsuarios')
 })
 
 Cypress.Commands.add('realizarCadastroAdmin', (dados) => {
@@ -53,8 +56,8 @@ Cypress.Commands.add('realizarCadastroAdmin', (dados) => {
 })
 
 Cypress.Commands.add('navegarListarUsuarios', (dados) => {
-
   cy.get(locLogin.barraOpcoes.listarUsuarios).click()
+  cy.wait('@getUsuarios')
   cy.contains('Lista dos usuários').should('be.visible')
   cy.gerarEvidencia('Tela de listagem de usuários exibida com sucesso')
 
@@ -66,18 +69,48 @@ Cypress.Commands.add('navegarListarUsuarios', (dados) => {
 })
 
 Cypress.Commands.add('excluirUsuario', (dados) => {
-
   cy.get(locLogin.barraOpcoes.listarUsuarios).click()
   cy.contains('Lista dos usuários').should('be.visible')
   cy.gerarEvidencia('Tela de listagem de usuários exibida com sucesso')
 
+  let usuarioEncontrado = false
+
   cy.get(locLogin.listarUsuarios.linha).each(($linha, index) => {
+
     cy.get(locLogin.listarUsuarios.colunaNome).eq(index).then(($nome) => {
+
       if ($nome.text() === dados) {
+        usuarioEncontrado = true
+        cy.gerarEvidencia(`Usuário ${$nome.text()} encontrado`)
         cy.get(locLogin.listarUsuarios.btnExcluir).eq(index).click()
+        cy.wait('@deleteUsuarios').its('response.statusCode').should('eq', 200)
+        cy.gerarEvidencia(`Usuário ${$nome.text()} excluído com sucesso`) 
       } else {
         cy.log(`O usuário ${dados} não foi encontrado na linha ${index}`)
       }
     })
+    
+  }).then(() => {
+    if (!usuarioEncontrado) {
+      throw new Error('Usuário não encontrado para exclusão')
+    }
   })
+})
+
+Cypress.Commands.overwrite('click', (originalFn, subject, options) => {
+
+  Cypress.$(subject).css('border', '2px solid blue')
+
+  return originalFn(subject, options)
+
+})
+
+Cypress.Commands.overwrite('type', (originalFn, subject, text, options) => {
+
+  Cypress.$(subject)
+    .css('border', '2px solid blue')
+    .css('transition', '0.2s')
+
+  return originalFn(subject, text, options)
+
 })
