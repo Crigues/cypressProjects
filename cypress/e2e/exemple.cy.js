@@ -12,70 +12,87 @@ beforeEach(() => {
 
 describe('Automação site serverest', () => {
 
-    it('Não deve realizar login por credenciais inválidas', () => {
-        let currentDadosLogin = {}
-        currentDadosLogin.dadosLogin = {}
+    //OK
+    it('[REGRA][LOGIN] - Não deve realizar login com email inválido', () => {
 
-        currentDadosLogin.dadosLogin.email = 'ercastro.qa@gmail.com'
-        currentDadosLogin.dadosLogin.senha = 'Testqa..'
-        currentDadosLogin.dadosLogin.senhaFalse = '12345678'
-        currentDadosLogin.dadosLogin.emailFalse = 'ercastro.qa@gmail.com.br'
+        const dadosLogin = {
+            email: 'ercastro.qa@gmail.com.br',
+            senha: 'Testqa..'
+        }
+        cy.realizarLoginInvalido(dadosLogin)
+    })
 
-        cy.realizarLoginFalse(currentDadosLogin.dadosLogin)
+    //OK
+    it('[REGRA][LOGIN]  - Não deve realizar login com senha inválida', () => {
+
+        const dadosLogin = {
+            email: 'ercastro.qa@gmail.com',
+            senha: '12345678'
+        }
+        cy.realizarLoginInvalido(dadosLogin)
+    })
+
+    //OK
+    it('[FLUXO][LOGIN] - Deve realizar o cadastro de credenciais', () => {
+
+        const dadosLogin = {
+            email: `ercastro.qa@gmail.com`,
+            senha: 'Testqa..',
+            nome: 'Emerson Castro',
+            admin: true
+        }
+        cy.realizarCadastro(dadosLogin)
     });
 
-    it('Deve realizar o cadastro de credenciais válidas deslogado', () => {
-        let currentDadosLogin = {}
-        currentDadosLogin.dadosLogin = {}
+    //OK
+    it('[REGRA][LOGIN]  - Deve realizar login com email e senha válidos', () => {
 
-        currentDadosLogin.dadosLogin.email = 'ercastro.qa@gmail.com'
-        currentDadosLogin.dadosLogin.senha = 'Testqa..'
-        currentDadosLogin.dadosLogin.nome = 'Emerson Castro'
+        const dadosLogin = {
+            email: 'ercastro.qa@gmail.com',
+            senha: 'Testqa..'
+        }
+        cy.realizarLogin(dadosLogin)
+    })
 
-        cy.realizarCadastro(currentDadosLogin.dadosLogin)
-    });
+    //OK
+    it('[FLUXO][LOGIN] - Deve realizar o cadastro de usuários com login administrador logado', () => {
 
-    it('Deve realizar o cadastro de usuários com login administrador logado', () => {
-        let currentDadosLogin = {}
-        currentDadosLogin.dadosLogin = {}
-
-        currentDadosLogin.dadosLogin.email = 'ercastro.qa@gmail.com'
-        currentDadosLogin.dadosLogin.senha = 'Testqa..'
-
-        const dados = {
-            quantidadeLoops: 1,
-            email: `ercastro.qa+${Date.now()}@gmail.com`,
-            nome: `${faker.person.firstName()} ${faker.person.lastName()}`,
-            senha: '0123456789'
+        const dadosLogin = {
+            email: 'ercastro.qa@gmail.com',
+            senha: 'Testqa..'
         }
 
-        cy.realizarLogin(currentDadosLogin.dadosLogin)
-        cy.realizarCadastroAdmin(dados, currentDadosLogin.dadosLogin)
+        const dados = {
+            quantidadeLoops: 3,
+            senha: '0123456789'
+        }
+        cy.realizarLogin(dadosLogin)
+        cy.realizarCadastroAdmin(dados)
     });
 
-    it('Deve navegar na lista de usuários', () => {
-        let currentDadosLogin = {}
-        currentDadosLogin.dadosLogin = {}
-
-        currentDadosLogin.dadosLogin.email = 'ercastro.qa@gmail.com'
-        currentDadosLogin.dadosLogin.senha = 'Testqa..'
-
-        cy.realizarLogin(currentDadosLogin.dadosLogin)
+    //OK
+    it('[REGRA][LOGIN] - Deve navegar na lista de usuários', () => {
+        
+        const dadosLogin = {
+            email: 'ercastro.qa@gmail.com',
+            senha: 'Testqa..'
+        }
+        cy.realizarLogin(dadosLogin)
         cy.navegarListarUsuarios()
     });
 
-    it.only('Deve excluir um usuário', () => {
-        let currentDadosLogin = {}
-        currentDadosLogin.dadosLogin = {}
-
-        currentDadosLogin.dadosLogin.email = 'ercastro.qa@gmail.com'
-        currentDadosLogin.dadosLogin.senha = 'Testqa..'
-
-        const usuarios = {
-            nomeUsuario: 'Roger Upton'
+    //OK
+    it.skip('[FLUXO][LOGIN] - Deve excluir um usuário', () => {
+        const dadosLogin = {
+            email: 'ercastro.qa@gmail.com',
+            senha: 'Testqa..'
         }
 
-        cy.realizarLogin(currentDadosLogin.dadosLogin)
+        const usuarios = {
+            nomeUsuario: 'Audrey Feest'
+        }
+
+        cy.realizarLogin(dadosLogin)
         cy.excluirUsuario(usuarios.nomeUsuario)
     });
 });
